@@ -87,6 +87,16 @@ SANITY_API_WRITE_TOKEN=YOUR_WRITE_TOKEN_HERE
 AUTH_SECRET=YOUR_RANDOM_SECRET_HERE
 ```
 
+Where these values come from:
+
+- `NEXT_PUBLIC_SANITY_PROJECT_ID`: Sanity Manage → open your project → **Project ID**.
+- `NEXT_PUBLIC_SANITY_DATASET`: Sanity Manage → **Datasets** (usually `production`).
+- `NEXT_PUBLIC_SANITY_API_VERSION`: pick the API version your project uses (example above).
+- `SANITY_API_WRITE_TOKEN`: Sanity Manage → **API** → **Tokens** → **Create token** → **Write** permission.
+- `AUTH_SECRET`: any 32-byte random hex string (see the command below).
+
+Do not add `VERCEL_OIDC_TOKEN` to `.env.local`. It is created and managed by the Vercel CLI during deploys and should not be committed or shared.
+
 How to create `SANITY_API_WRITE_TOKEN`:
 
 1. Go to Sanity Manage for your project.
