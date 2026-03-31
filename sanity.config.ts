@@ -18,6 +18,7 @@ import { presentationTool } from 'sanity/presentation'
 import { structureTool } from 'sanity/structure'
 import { unsplashImageAsset } from 'sanity-plugin-asset-source-unsplash'
 import authorType from 'schemas/author'
+import blogUserType from 'schemas/blogUser'
 import postType from 'schemas/post'
 import settingsType from 'schemas/settings'
 
@@ -31,7 +32,7 @@ export default defineConfig({
   title,
   schema: {
     // If you want more content types, you can add them to this array
-    types: [authorType, postType, settingsType],
+    types: [authorType, postType, settingsType, blogUserType],
   },
   plugins: [
     structureTool({

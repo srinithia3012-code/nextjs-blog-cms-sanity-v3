@@ -1,7 +1,7 @@
 import cn from 'classnames'
-import { urlForImage } from 'lib/sanity.image'
 import Image from 'next/image'
 import Link from 'next/link'
+import { urlForImage } from 'lib/sanity.image'
 
 interface CoverImageProps {
   title: string
@@ -10,37 +10,46 @@ interface CoverImageProps {
   priority?: boolean
 }
 
-export default function CoverImage(props: CoverImageProps) {
-  const { title, slug, image: source, priority } = props
-  const image = source?.asset?._ref ? (
+export default function CoverImage({
+  title,
+  slug,
+  image: source,
+  priority,
+}: CoverImageProps) {
+  // ✅ Sanity-safe check
+  if (!source?.asset) {
+    return <div className="bg-gray-200 aspect-[2/1]" />
+  }
+
+  const imageUrl = urlForImage(source)
+    .width(2000)
+    .height(1000)
+    .fit('crop')
+    .url()
+
+  const image = (
     <div
       className={cn('shadow-small', {
         'transition-shadow duration-200 hover:shadow-medium': slug,
       })}
     >
       <Image
-        className="h-auto w-full"
+        src={imageUrl}
+        alt={title || 'Cover image'}
         width={2000}
         height={1000}
-        alt=""
-        src={urlForImage(source).height(1000).width(2000).url()}
         sizes="100vw"
         priority={priority}
+        className="w-full h-auto"
       />
     </div>
-  ) : (
-    <div style={{ paddingTop: '50%', backgroundColor: '#ddd' }} />
   )
 
-  return (
-    <div className="sm:mx-0">
-      {slug ? (
-        <Link href={`/posts/${slug}`} aria-label={title}>
-          {image}
-        </Link>
-      ) : (
-        image
-      )}
-    </div>
+  return slug ? (
+    <Link href={`/posts/${slug}`} aria-label={title}>
+      {image}
+    </Link>
+  ) : (
+    image
   )
 }

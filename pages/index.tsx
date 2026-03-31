@@ -1,9 +1,10 @@
 import IndexPage from 'components/IndexPage'
 import PreviewIndexPage from 'components/PreviewIndexPage'
+import { authCookieName, verifyAuthToken } from 'lib/auth'
 import { readToken } from 'lib/sanity.api'
 import { getAllPosts, getClient, getSettings } from 'lib/sanity.client'
 import { Post, Settings } from 'lib/sanity.queries'
-import { GetStaticProps } from 'next'
+import { GetServerSideProps } from 'next'
 import type { SharedPageProps } from 'pages/_app'
 
 interface PageProps extends SharedPageProps {
@@ -29,7 +30,22 @@ export default function Page(props: PageProps) {
   )
 }
 
-export const getStaticProps: GetStaticProps<PageProps, Query> = async (ctx) => {
+export const getServerSideProps: GetServerSideProps<
+  PageProps,
+  Query
+> = async (ctx) => {
+  const token = ctx.req.cookies?.[authCookieName]
+  const payload = token ? verifyAuthToken(token) : null
+
+  if (!payload) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    }
+  }
+
   const { preview: previewMode = false, previewData } = ctx
   const client = getClient(
     previewMode ? { token: readToken, perspective: previewData } : undefined,
