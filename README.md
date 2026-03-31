@@ -12,6 +12,7 @@ The Studio connects to Sanity Content Lake, which gives you hosted content APIs 
 ## Features
 
 - A performant, static blog with editable posts, authors, and site settings
+- Public sign-up and sign-in backed by Sanity (document type: `blogUser`)
 - A native and customizable authoring environment, accessible on `yourblog.com/studio`
 - Real-time and collaborative content editing with fine-grained revision history
 - Side-by-side instant content preview that works across your whole site
@@ -65,29 +66,56 @@ Use the Deploy Button below. It will let you deploy the starter using [Vercel](h
 
 [![Deploy with Vercel](https://vercel.com/button)][vercel-deploy]
 
-### Step 2. Set up the project locally
+### Step 2. Install and configure locally
 
-[Clone the repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) that was created for you on your GitHub account. Once cloned, run the following command from the project's root directory:
+Install dependencies:
 
 ```bash
-npx vercel link
+npm install
 ```
 
-Download the environment variables needed to connect Next.js and the Studio to your Sanity project:
+Create `.env.local` with these variables:
 
 ```bash
-npx vercel env pull
+# Local environment variables (do not commit)
+NEXT_PUBLIC_SANITY_PROJECT_ID=qwkdvwqy
+NEXT_PUBLIC_SANITY_DATASET=production
+NEXT_PUBLIC_SANITY_API_VERSION="2022-11-15"
+
+# Required for auth endpoints
+SANITY_API_WRITE_TOKEN=YOUR_WRITE_TOKEN_HERE
+AUTH_SECRET=YOUR_RANDOM_SECRET_HERE
+```
+
+How to create `SANITY_API_WRITE_TOKEN`:
+
+1. Go to Sanity Manage for your project.
+2. Open **API** → **Tokens**.
+3. Click **Create token** and choose **Write** permission.
+4. Copy the token and paste it into `SANITY_API_WRITE_TOKEN`.
+
+Generate a random `AUTH_SECRET`:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
 ### Step 3. Run Next.js locally in development mode
 
 ```bash
-npm install && npm run dev
+npm run dev
 ```
 
 When you run this development server, the changes you make in your frontend and studio configuration will be applied live using hot reloading.
 
 Your blog should be up and running on [http://localhost:3000][localhost-3000]! You can create and edit content on [http://localhost:3000/studio][localhost-3000-studio].
+
+Auth pages:
+
+- `http://localhost:3000/signup`
+- `http://localhost:3000/login`
+
+After login/signup, the app redirects to the latest post (or `/` if no posts exist).
 
 ### Step 4. Deploy to production
 
